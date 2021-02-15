@@ -3,5 +3,5 @@ streamlit==0.76.0
 scikit-learn==0.23.2
 numpy==1.19.2
 joblib==0.17.0
-PIL==8.0.1
+Pillow==8.0.1
 matplotlib==3.3.2
