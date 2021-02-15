@@ -1,6 +1,6 @@
 pandas==1.1.3
 streamlit==0.76.0
-sklearn==0.23.2
+scikit-learn==0.23.2
 numpy==1.19.2
 joblib==0.17.0
 PIL==8.0.1
