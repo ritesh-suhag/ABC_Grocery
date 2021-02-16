@@ -2,6 +2,7 @@
 # IMPORT IMPORTANT LIBRARIES
 
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import pickle
@@ -17,80 +18,8 @@ import joblib
 
 # ~~~~~~~~~~~~~~~~~ ALL REQUIRED FUNCTIONS ~~~~~~~~~~~~~~~~~
 
-def make_plot(summary_stats, time_period, vis_type, user_department, departments_list, department_color, app_section = None):
-    if vis_type == 'Sales':
-        column_name = 'sales_cost'
-        column_type = 'sum'
-    elif vis_type == 'Number of Items Sold':
-        column_name = 'num_items'
-        column_type = 'sum'
-    elif vis_type == 'Number of Customers':
-        column_name = 'customer_id'
-        column_type = 'nunique'
-    
-    if time_period == 'Daily':
-        time_column = 'transaction_date'
-    elif time_period == 'Weekly':
-        time_column = 'transaction_week'
-    elif time_period == 'Monthly':
-        time_column = 'transaction_month'
-    
-    
-    if user_department == 'Overall':
-        plt.style.use("bmh")
-        plt.plot(summary_stats[time_column], summary_stats[column_name][column_type])
-        plt.title(f'{time_period} {vis_type} overall')
-        plt.xlabel('Time')
-        plt.ylabel(f'{vis_type}')
-        app_section.pyplot()
-        mpl.rcParams.update(mpl.rcParamsDefault)
-        
-    elif user_department == 'By Departments':
-        for department in departments_list:
-            plt.plot(summary_stats[summary_stats['product_area_name'] == department][time_column],
-                     summary_stats[summary_stats['product_area_name'] == department][column_name][column_type], label = department,
-                     color = department_color[department])
-        plt.legend()
-        plt.title(f'{time_period} {vis_type} by department')
-        plt.xlabel('Time')
-        plt.ylabel(f'{vis_type}')
-        app_section.pyplot()
-    else:
-        selected_department = user_department
-        for department in departments_list:
-            if department == selected_department:
-                department_label = department
-                line_color = department_color[department]
-                deparment_style = '-'
-                department_alpha = 1
-            else:
-                department_label = department
-                line_color = 'silver'
-                deparment_style = '--'
-                department_alpha = 0.5
-            plt.plot(summary_stats[summary_stats['product_area_name'] == department][time_column],
-                         summary_stats[summary_stats['product_area_name'] == department][column_name][column_type], 
-                         label = department_label, color = line_color, linestyle = deparment_style, alpha = department_alpha)
-        plt.legend()
-        plt.title(f'{time_period} {vis_type} by department')
-        plt.xlabel('Time')
-        plt.ylabel(f'{vis_type}')
-        app_section.pyplot()
-
-
 # Function to create Analytics page - 
 def analytics_Page():
-    daily_department_summary_stats, weekly_department_summary_stats, monthly_department_summary_stats, daily_overall_summary_stats, weekly_overall_summary_stats, monthly_overall_summary_stats = pickle.load(open('Visualizations/summary_files.p', 'rb'))
-    
-    # Getting departments list - 
-    departments_list = ['Dairy', 'Fruit', 'Meat', 'Vegetables', 'Non-Food']
-    
-    # Creating color dictionary - 
-    department_color = {"Dairy" : 'navy',
-                        "Fruit" : 'orange',
-                        "Meat" : 'limegreen',
-                        "Vegetables" : 'red',
-                        "Non-Food" : 'darkviolet'}
     
     # Introduction of the page -
     st.write("""
@@ -98,97 +27,16 @@ def analytics_Page():
              
              This page is designed to give an overview of the business to the stakeholders.  
              
-             We see 3 different graphs - Sales data, number of items sold and unique number of customers. They are all visualized by days, weeks and months.  
-             
-             We can use the selectbox below to choose whether we want to see the overall picture, or segregated by department or focus on a single department.
+             We use a tablaue dashboard to give the overview of the business. 
              """)
-             
-    col1, col2, col3 = st.beta_columns((1,1,1))
-    user_department = col2.selectbox('Choose Granularity - ', ['By Departments', 'Dairy', 'Fruit', 'Meat', 'Vegetables', 'Non-Food', 'Overall'])
+    st.write('---')
     
-    # SALES GRAPH ~~~~~~~~~~~~~~~~~~~~~~ 
+    st.write("## Tableau Dashboard")
     
-    st.write(' ')
-    
-    st.write('### Sales - ')
-    # Dividing the page in 3 parts -
-    sales_col1, sales_col2, sales_col3 = st.beta_columns((1,1,1))
-    
-    if user_department == 'Overall': 
-        # Daily plot
-        make_plot(summary_stats = daily_overall_summary_stats, time_period = 'Daily', vis_type = 'Sales', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = sales_col1)
-        # Weekly plot
-        make_plot(summary_stats = weekly_overall_summary_stats, time_period = 'Weekly', vis_type = 'Sales', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = sales_col2)
-        # Monthly plot
-        make_plot(summary_stats = monthly_overall_summary_stats, time_period = 'Monthly', vis_type = 'Sales', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = sales_col3)
-    else:
-        # Daily plot
-        make_plot(summary_stats = daily_department_summary_stats, time_period = 'Daily', vis_type = 'Sales', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = sales_col1)
-        # Weekly plot
-        make_plot(summary_stats = weekly_department_summary_stats, time_period = 'Weekly', vis_type = 'Sales', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = sales_col2)
-        # Monthly plot
-        make_plot(summary_stats = monthly_department_summary_stats, time_period = 'Monthly', vis_type = 'Sales', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = sales_col3)
-    
-    # NUMBER OF ITEMS GRAPH ~~~~~~~~~~~~~~~~~~~~~~ 
-    
-    st.write('### Number of items sold - ')
-    # Dividing the page in 3 parts -
-    num_items_col1, num_items_col2, num_items_col3 = st.beta_columns((1,1,1))
-    
-    if user_department == 'Overall': 
-        # Daily plot
-        make_plot(summary_stats = daily_overall_summary_stats, time_period = 'Daily', vis_type = 'Number of Items Sold', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = num_items_col1)
-        # Weekly plot
-        make_plot(summary_stats = weekly_overall_summary_stats, time_period = 'Weekly', vis_type = 'Number of Items Sold', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = num_items_col2)
-        # Monthly plot
-        make_plot(summary_stats = monthly_overall_summary_stats, time_period = 'Monthly', vis_type = 'Number of Items Sold', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = num_items_col3)
-    else:
-        # Daily plot
-        make_plot(summary_stats = daily_department_summary_stats, time_period = 'Daily', vis_type = 'Number of Items Sold', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = num_items_col1)
-        # Weekly plot
-        make_plot(summary_stats = weekly_department_summary_stats, time_period = 'Weekly', vis_type = 'Number of Items Sold', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = num_items_col2)
-        # Monthly plot
-        make_plot(summary_stats = monthly_department_summary_stats, time_period = 'Monthly', vis_type = 'Number of Items Sold', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = num_items_col3)
-        
-    # NUMBER OF CUSTOMERS GRAPH ~~~~~~~~~~~~~~~~~~~~~~ 
-    
-    st.write('### Number of Customers shopping - ')
-    # Dividing the page in 3 parts -
-    num_cus_col1, num_cus_col2, num_cus_col3 = st.beta_columns((1,1,1))
-    
-    if user_department == 'Overall': 
-        # Daily plot
-        make_plot(summary_stats = daily_overall_summary_stats, time_period = 'Daily', vis_type = 'Number of Customers', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = num_cus_col1)
-        # Weekly plot
-        make_plot(summary_stats = weekly_overall_summary_stats, time_period = 'Weekly', vis_type = 'Number of Customers', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = num_cus_col2)
-        # Monthly plot
-        make_plot(summary_stats = monthly_overall_summary_stats, time_period = 'Monthly', vis_type = 'Number of Customers', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = num_cus_col3)
-    else:
-        # Daily plot
-        make_plot(summary_stats = daily_department_summary_stats, time_period = 'Daily', vis_type = 'Number of Customers', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = num_cus_col1)
-        # Weekly plot
-        make_plot(summary_stats = weekly_department_summary_stats, time_period = 'Weekly', vis_type = 'Number of Customers', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = num_cus_col2)
-        # Monthly plot
-        make_plot(summary_stats = monthly_department_summary_stats, time_period = 'Monthly', vis_type = 'Number of Customers', user_department = user_department, 
-                  departments_list = departments_list, department_color = department_color, app_section = num_cus_col3)
-
+    html_temp = """
+                <div class='tableauPlaceholder' id='viz1613340201972' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;AB&#47;ABCGroceryDashboard&#47;Final&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='ABCGroceryDashboard&#47;Final' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;AB&#47;ABCGroceryDashboard&#47;Final&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1613340201972');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='1000px';vizElement.style.height='827px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='1000px';vizElement.style.height='827px';} else { vizElement.style.width='100%';vizElement.style.height='1377px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+                """
+    components.html(html_temp, width=1130, height=900)
 
 # Function to get different parameters according to user selected model -
 def add_parameter_ui(model, navigation_tab):
@@ -361,7 +209,7 @@ def prediction_input(section_expander, navigation_tab):
             col2.write(f'**Customer Loyalty Score** = {round(prediction, 2)}')
         elif navigation_tab == 'Marketing Recommender':
             # Reading in the trained pipeline to make prediction -
-            pipeline_clf = joblib.load("Classification_Files/pipeline_classifier.joblib")
+            pipeline_clf = joblib.load("Classification_files/pipeline_classifier.joblib")
             prediction = pipeline_clf.predict_proba(X_input)[0][1]
             col2.write(f'**Probability of signing up** - {round(prediction, 3)}')
 
@@ -629,7 +477,8 @@ if navigation_tab == 'Home-Page':
     st.write("""
          # ABC Grocery Mart
          
-         This app is designed to assist ABC Grocery Mart. It contains 2 sections - 
+         This app is designed to assist ABC Grocery Mart. It contains 3 sections -  
+         * **Analytics-Page:** An integrated Tableau dashboard to give an overview of the business to the stakeholders.  
          * **Customer Stores:** The users can get the loyalty score for a customer using a machine learning model.
          * **Recommendation Engine:** Employees can use this to decide whether or not to target a particular customer for the marketing campaign.
          
@@ -651,5 +500,4 @@ elif navigation_tab == 'Customer Loyalty Calculator':
 # Marketing recommendation page -
 elif navigation_tab == 'Marketing Recommender':
     marketing_recommender()
-
-
+    

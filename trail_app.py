@@ -18,80 +18,8 @@ import joblib
 
 # ~~~~~~~~~~~~~~~~~ ALL REQUIRED FUNCTIONS ~~~~~~~~~~~~~~~~~
 
-def make_plot(summary_stats, time_period, vis_type, user_department, departments_list, department_color, app_section = None):
-    if vis_type == 'Sales':
-        column_name = 'sales_cost'
-        column_type = 'sum'
-    elif vis_type == 'Number of Items Sold':
-        column_name = 'num_items'
-        column_type = 'sum'
-    elif vis_type == 'Number of Customers':
-        column_name = 'customer_id'
-        column_type = 'nunique'
-    
-    if time_period == 'Daily':
-        time_column = 'transaction_date'
-    elif time_period == 'Weekly':
-        time_column = 'transaction_week'
-    elif time_period == 'Monthly':
-        time_column = 'transaction_month'
-    
-    
-    if user_department == 'Overall':
-        plt.style.use("bmh")
-        plt.plot(summary_stats[time_column], summary_stats[column_name][column_type])
-        plt.title(f'{time_period} {vis_type} overall')
-        plt.xlabel('Time')
-        plt.ylabel(f'{vis_type}')
-        app_section.pyplot()
-        mpl.rcParams.update(mpl.rcParamsDefault)
-        
-    elif user_department == 'By Departments':
-        for department in departments_list:
-            plt.plot(summary_stats[summary_stats['product_area_name'] == department][time_column],
-                     summary_stats[summary_stats['product_area_name'] == department][column_name][column_type], label = department,
-                     color = department_color[department])
-        plt.legend()
-        plt.title(f'{time_period} {vis_type} by department')
-        plt.xlabel('Time')
-        plt.ylabel(f'{vis_type}')
-        app_section.pyplot()
-    else:
-        selected_department = user_department
-        for department in departments_list:
-            if department == selected_department:
-                department_label = department
-                line_color = department_color[department]
-                deparment_style = '-'
-                department_alpha = 1
-            else:
-                department_label = department
-                line_color = 'silver'
-                deparment_style = '--'
-                department_alpha = 0.5
-            plt.plot(summary_stats[summary_stats['product_area_name'] == department][time_column],
-                         summary_stats[summary_stats['product_area_name'] == department][column_name][column_type], 
-                         label = department_label, color = line_color, linestyle = deparment_style, alpha = department_alpha)
-        plt.legend()
-        plt.title(f'{time_period} {vis_type} by department')
-        plt.xlabel('Time')
-        plt.ylabel(f'{vis_type}')
-        app_section.pyplot()
-
-
 # Function to create Analytics page - 
 def analytics_Page():
-    daily_department_summary_stats, weekly_department_summary_stats, monthly_department_summary_stats, daily_overall_summary_stats, weekly_overall_summary_stats, monthly_overall_summary_stats = pickle.load(open('Visualizations/summary_files.p', 'rb'))
-    
-    # Getting departments list - 
-    departments_list = ['Dairy', 'Fruit', 'Meat', 'Vegetables', 'Non-Food']
-    
-    # Creating color dictionary - 
-    department_color = {"Dairy" : 'navy',
-                        "Fruit" : 'orange',
-                        "Meat" : 'limegreen',
-                        "Vegetables" : 'red',
-                        "Non-Food" : 'darkviolet'}
     
     # Introduction of the page -
     st.write("""
@@ -110,7 +38,6 @@ def analytics_Page():
                 """
     components.html(html_temp, width=1130, height=900)
     
-
 # Function to get different parameters according to user selected model -
 def add_parameter_ui(model, navigation_tab):
     
@@ -282,7 +209,7 @@ def prediction_input(section_expander, navigation_tab):
             col2.write(f'**Customer Loyalty Score** = {round(prediction, 2)}')
         elif navigation_tab == 'Marketing Recommender':
             # Reading in the trained pipeline to make prediction -
-            pipeline_clf = joblib.load("Classification_Files/pipeline_classifier.joblib")
+            pipeline_clf = joblib.load("Classification_files/pipeline_classifier.joblib")
             prediction = pipeline_clf.predict_proba(X_input)[0][1]
             col2.write(f'**Probability of signing up** - {round(prediction, 3)}')
 
@@ -550,7 +477,8 @@ if navigation_tab == 'Home-Page':
     st.write("""
          # ABC Grocery Mart
          
-         This app is designed to assist ABC Grocery Mart. It contains 2 sections - 
+         This app is designed to assist ABC Grocery Mart. It contains 3 sections - 
+         * **Analytics-Page:** An integrated Tableau dashboard to give an overview of the business to the stakeholders.
          * **Customer Stores:** The users can get the loyalty score for a customer using a machine learning model.
          * **Recommendation Engine:** Employees can use this to decide whether or not to target a particular customer for the marketing campaign.
          
@@ -572,5 +500,4 @@ elif navigation_tab == 'Customer Loyalty Calculator':
 # Marketing recommendation page -
 elif navigation_tab == 'Marketing Recommender':
     marketing_recommender()
-
-
+    
