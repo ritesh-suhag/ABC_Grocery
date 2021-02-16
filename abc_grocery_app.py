@@ -387,7 +387,7 @@ def marketing_recommender():
                               """)
     model_expander.write(' ')
     
-    X_train, X_test, y_train, y_test = pickle.load(open("Classification_Files/user_trial_inputs.p", "rb"))
+    X_train, X_test, y_train, y_test = pickle.load(open("Classification_files/user_trial_inputs.p", "rb"))
     
     # Select box to select the type of model to play with -
     clf_model = model_expander.selectbox('Choose a model', ['~ Select a Model ~', 'Decision Trees', 'Random Forest', 'Logistic Regression'])
