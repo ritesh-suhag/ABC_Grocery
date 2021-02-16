@@ -291,7 +291,8 @@ pickle.dump([rf_best_param, dt_best_param], open("tuned_params.p", "wb"))
 categorical_transformer = Pipeline(steps = [("ohe", OneHotEncoder(handle_unknown = "ignore"))])
 
 # Creating the column transformer to apply it to the new data - 
-preprocessing_pipeline = ColumnTransformer(transformers = [("categorical", categorical_transformer, categorical_features)])
+preprocessing_pipeline = ColumnTransformer(transformers = [("categorical", categorical_transformer, categorical_features)],
+                                           remainder='passthrough')
 
 # getting the tuned rf model from the grid search -
 rf_regressor = rf_gscv.best_estimator_ 

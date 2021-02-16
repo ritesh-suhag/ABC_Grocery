@@ -27,7 +27,7 @@ def analytics_Page():
              
              This page is designed to give an overview of the business to the stakeholders.  
              
-             We use a tablaue dashboard to give the overview of the business. 
+             We use a Tableau dashboard to give the overview of the business. 
              """)
     st.write('---')
     
