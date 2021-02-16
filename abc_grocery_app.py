@@ -449,7 +449,7 @@ def marketing_recommender():
 # ~~~~~~~~~~~~~~~~~ INITIAL HOME PAGE ~~~~~~~~~~~~~~~~~
 
 # Setting the page layout -
-st.set_page_config(layout = 'wide')
+st.set_page_config(layout = 'wide', page_title = "ABC Grocery App")
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # Setting the title - 
