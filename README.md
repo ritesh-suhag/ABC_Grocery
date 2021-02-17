@@ -2,4 +2,4 @@
 
 # ABC_Grocery
 
-The ABC Grocery App is live at - [Project site](https://ritesh-abc-grocery.herokuapp.com/)
+The ABC Grocery App is live at - [Project site](https://ritesh-abc-grocery.herokuapp.com)
