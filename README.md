@@ -1,4 +1,4 @@
-![App image](/image.png)
+![App image](/image2.png)
 
 # ABC_Grocery
 
