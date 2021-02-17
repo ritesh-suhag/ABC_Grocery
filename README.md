@@ -1,4 +1,4 @@
-!(/images/logo)
+!(image.png)
 
 # ABC_Grocery
 
