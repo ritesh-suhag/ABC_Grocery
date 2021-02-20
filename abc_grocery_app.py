@@ -25,16 +25,26 @@ def analytics_Page():
     st.write("""
              # Welcome to the Analytics Page!
              
-             This page is designed to give an overview of the business to the stakeholders.  
-             
-             We use a Tableau dashboard to give the overview of the business. 
+             This page is designed to give an overview of the business to the stakeholders. 
              """)
+             
+    st.write(" ")
+    
+    about_expander = st.beta_expander("About", expanded=False)
+    about_expander.write("""
+                         The Dashboard consists of 4 Graphs - 
+                         * **Sales vs Time:** The line graph shows the variations of sales over the 6 months by department. We can select one of  multiple departments to analyze at the same time.
+                         * **Gender:** The pie chart shows the percent of male and female shopping at the stores. This chart can also be used filter values in the dashboard.
+                         * **Distance from Stores:** The bar graph shows the distribution of customers according to their distances from the respective store locations. The graph is colored according to the customer loyalty scores.
+                         * **Total Sales State Map:** The map shows the sales distribution across the states in the US.
+                         """)
+    st.write(' ')
     st.write('---')
     
     st.write("## Tableau Dashboard")
     
     html_temp = """
-                <div class='tableauPlaceholder' id='viz1613340201972' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;AB&#47;ABCGroceryDashboard&#47;Final&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='ABCGroceryDashboard&#47;Final' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;AB&#47;ABCGroceryDashboard&#47;Final&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1613340201972');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='1000px';vizElement.style.height='827px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='1000px';vizElement.style.height='827px';} else { vizElement.style.width='100%';vizElement.style.height='1377px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+                <div class='tableauPlaceholder' id='viz1613777907392' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;3X&#47;3X7897YHF&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='path' value='shared&#47;3X7897YHF' /> <param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;3X&#47;3X7897YHF&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en' /><param name='filter' value='publish=yes' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1613777907392');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='1000px';vizElement.style.height='827px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='1000px';vizElement.style.height='827px';} else { vizElement.style.width='100%';vizElement.style.height='1427px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
                 """
     components.html(html_temp, width=1130, height=900)
 
@@ -43,7 +53,7 @@ def add_parameter_ui(model, navigation_tab):
     
     if navigation_tab == 'Customer Loyalty Calculator':
         rf_best_param, dt_best_param = pickle.load(open("Regression_Files/tuned_params.p", "rb"))
-    elif navigation_tab == 'Marketing Recommender':
+    elif navigation_tab == 'Marketing Campaign':
         rf_best_param, dt_best_param = pickle.load(open("Classification_files/tuned_params.p", "rb"))
     
     # Empty list to save the parameters -
@@ -197,7 +207,7 @@ def prediction_input(section_expander, navigation_tab):
     except:
         pass
     
-    col1, col2, col3 = section_expander.beta_columns((1,1,1))
+    col1, col2, col3 = section_expander.beta_columns((1,3,1))
     
     if sum(input_check) != 6:
         col2.info(' Check all the inputs! ')
@@ -205,13 +215,14 @@ def prediction_input(section_expander, navigation_tab):
         if navigation_tab == 'Customer Loyalty Calculator':
             # Reading in the trained pipeline to make prediction -
             pipeline_regressor = joblib.load("Regression_Files/pipeline_regressor.joblib")
+            col2.write(" ")
             prediction = pipeline_regressor.predict(X_input)[0]
-            col2.write(f'**Customer Loyalty Score** = {round(prediction, 2)}')
-        elif navigation_tab == 'Marketing Recommender':
+            col2.title(f'Customer Loyalty Score = {round(prediction, 3)}')
+        elif navigation_tab == 'Marketing Campaign':
             # Reading in the trained pipeline to make prediction -
             pipeline_clf = joblib.load("Classification_files/pipeline_classifier.joblib")
             prediction = pipeline_clf.predict_proba(X_input)[0][1]
-            col2.write(f'**Probability of signing up** - {round(prediction, 3)}')
+            col2.title(f'Probability of signing up - {round(prediction, 3)}')
 
 # Function to display Customer loyalty page -
 def customer_loyalty_calculator():
@@ -225,24 +236,24 @@ def customer_loyalty_calculator():
              
              This page contains 3 sections -
              * **About:** Here you can read about the main idea of the page.
-             * **Calculate Customer Loyalty:** This section uses a tuned random forest to make prediction.
-             * **Explore different machine-learning models:** This section is designed for users to play with small chunk of data and see how different models perform.
+             * **Calculate Customer Loyalty:** This section uses a tuned random forest to make the prediction.
+             * **Explore different machine-learning models:** This section is designed for users to play with a small chunk of data and see how different models perform.
              
              """)
     
-    st.write(' ')
-    st.write(' ')
+    st.write('---')
     
     # About Section -
     about_expander = st.beta_expander('About')
     about_expander.markdown("""
                 
-                The company had earlier hired a consulancy agency to calculate the customer loyalty score of existing customers. After sometime, they acquired new customers and wanted to calculate the customer loyalty score in-house in order to save the costs.  
+                The company had earlier hired a consultancy agency to calculate the customer loyalty score of existing customers. After some time, they acquired new customers and wanted to calculate the customer loyalty score in-house in order to save the costs.  
                 
-                This app currently uses random forest model to predict the customer loyalty score after trying various models. The explore different models section is designed to show an interactive space which can be used to test different models. I only provide a few parameters to tune but this can be extended to other available parameters as well.
+                This app currently uses a random forest model to predict the customer loyalty score after trying various models. The explore different models section is designed to show an interactive space that can be used to test different models. I only provide a few parameters to tune but this can be extended to other available parameters as well.
                 
                 """)
     
+    st.write(' ')
     st.write(' ')
     
     # Making expander for the getting prediction - 
@@ -254,11 +265,12 @@ def customer_loyalty_calculator():
     prediction_input(prediction_expander, navigation_tab)
     
     st.write(' ')
+    st.write(' ')
     
     # Section to allow users to play with test and train data -
     model_expander = st.beta_expander('Explore different machine-learning models')
     model_expander.write("""
-                              In this section you can play around with 3 different models and their respective parameters to see how a particular model responds.  
+                              In this section, you can play around with 3 different models and their respective parameters to see how a particular model responds.  
                               * **Decision tree** (min_leafs_sample, max_depth)  
                               * **Random Forest** (n_estimators, max_depth)  
                               * **Linear Regression** (No parameters available)     
@@ -284,7 +296,7 @@ def customer_loyalty_calculator():
         pred_values = regressor.predict(X_test)
         
         # Printing the model R2 score -
-        model_expander.write(f'* **R2-score** of the model - **{r2_score(y_test, pred_values)}**')
+        model_expander.write(f'* **R2-score** of the model - **{round(r2_score(y_test, pred_values), 3)}**')
         
         model_expander.write(' ')
         
@@ -335,45 +347,46 @@ def marketing_recommender():
     # Brief explanation of the section -
     
     st.write("""
-             ## Welcome to the customer recommender area!
+             ## Welcome to the Marketing Campaign area!
              
              #### How to navigate the page -
              
              This page contains 3 sections -
              * **About:** Here you can read about the main idea of the page.
-             * **Calculate Probability of Customer Churn:** This section uses a tuned random forest to make prediction.
-             * **Explore different machine-learning models:** This section is designed for users to play with small chunk of data and see how different models perform.
+             * **Calculate Probability of Customer Sign-up:** This section uses a tuned random forest to make the prediction.
+             * **Explore different machine-learning models:** This section is designed for users to play with a small chunk of data and see how different models perform.
              
              """)
     
-    st.write(' ')
-    st.write(' ')
+    st.write("---")
     
     # About Section -
     about_expander = st.beta_expander('About')
     about_expander.markdown("""
                 
-                In last 3 months, the marketing team ran a promotional campaign which would give customers free delivery for a $100 membership. We conducted AB testing to see whether a certain type of flyer would have higher sign-up rate. 
+                In the last 3 months, the marketing team ran a promotional campaign that would give customers free delivery for a $100 membership. We conducted AB testing to see whether a certain type of flyer would have higher a sign-up rate. 
                 We concluded that customers were more likely to sign-up if sent a particular flyer.  
                 
-                Later we designed a recommendation engine which would inform how likely a customer is to sign up for the promotion. This would help marketing team target the required customers and reduce the overall cost of the campaign.  
+                Later we designed a classification model which would inform how likely a customer is to sign up for the promotion. This would help the marketing team target the required customers and reduce the overall cost of the campaign.  
                 
-                This app currently uses random forest model to predict the recommendation.   
+                This app currently uses a random forest model to predict the recommendation.   
                 
-                The explore different models section is designed to show an interactive space which can be used to test different models. I only provide a few parameters to tune but this can be extended to other available parameters as well.
+                The explore different models section is designed to show an interactive space that can be used to test different models. I only provide a few parameters to tune but this can be extended to other available parameters as well.
                 
                 """)
     
     st.write(' ')
+    st.write(' ')
     
     # Making expander for the getting prediction - 
-    prediction_expander = st.beta_expander('Calculate Probability of Customer Churn')
+    prediction_expander = st.beta_expander('Calculate Probability of Customer Sign-Up')
     prediction_expander.write("""
                               Please enter the inputs below to get prediction (Dummy values have been entered to assist the user) -  
                               
                               """)
     prediction_input(prediction_expander, navigation_tab)
     
+    st.write(' ')
     st.write(' ')
     
     # Section to allow users to play with test and train data -
@@ -386,7 +399,7 @@ def marketing_recommender():
                                              
                               """)
     model_expander.write(' ')
-    
+    model_expander.write(' ')
     X_train, X_test, y_train, y_test = pickle.load(open("Classification_files/user_trial_inputs.p", "rb"))
     
     # Select box to select the type of model to play with -
@@ -466,7 +479,7 @@ st.image(image, use_column_width=True)
 
 # Sidebar navigation for users -
 st.sidebar.header('Navigation tab -')
-navigation_tab = st.sidebar.selectbox('Choose a tab', ('Home-Page', 'Analytics-Page', 'Customer Loyalty Calculator', 'Marketing Recommender'))
+navigation_tab = st.sidebar.selectbox('Choose a tab', ('Home-Page', 'Analytics-Page', 'Customer Loyalty Calculator', 'Marketing Campaign'))
 
 
 # Displaying pages according to the selection -
@@ -479,8 +492,8 @@ if navigation_tab == 'Home-Page':
          
          This app is designed to assist ABC Grocery Mart. It contains 3 sections -  
          * **Analytics-Page:** An integrated Tableau dashboard to give an overview of the business to the stakeholders.  
-         * **Customer Stores:** The users can get the loyalty score for a customer using a machine learning model.
-         * **Recommendation Engine:** Employees can use this to decide whether or not to target a particular customer for the marketing campaign.
+         * **Customer Loyalty Scores:** The users can get the loyalty score for a customer using a machine learning model.
+         * **Marketing Campaign:** Marketing team can use this to decide whether or not to target a particular customer for the marketing campaign.
          
          """)
     st.write(' ')
@@ -498,6 +511,6 @@ elif navigation_tab == 'Customer Loyalty Calculator':
     customer_loyalty_calculator()
 
 # Marketing recommendation page -
-elif navigation_tab == 'Marketing Recommender':
+elif navigation_tab == 'Marketing Campaign':
     marketing_recommender()
     
