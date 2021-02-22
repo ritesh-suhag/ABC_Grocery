@@ -35,7 +35,7 @@ def analytics_Page():
                          The Dashboard consists of 4 Graphs - 
                          * **Sales vs Time:** The line graph shows the variations of sales over the 6 months by department. We can select one of  multiple departments to analyze at the same time.
                          * **Gender:** The pie chart shows the percent of male and female shopping at the stores. This chart can also be used filter values in the dashboard.
-                         * **Distance from Stores:** The bar graph shows the distribution of customers according to their distances from the respective store locations. The graph is colored according to the customer loyalty scores.
+                         * **Distance from Stores:** The bar graph shows the distribution of customers according to their distances from the respective store locations. The graph is colored according to the customer loyalty scores. (Based on research from a consultancy, loyalty measures the proportion of a customer's total grocery spend that is allocated to ABC Grocery vs. their competitors)
                          * **Total Sales State Map:** The map shows the sales distribution across the states in the US.
                          """)
     st.write(' ')
@@ -236,7 +236,7 @@ def customer_loyalty_calculator():
              
              This page contains 3 sections -
              * **About:** Here you can read about the main idea of the page.
-             * **Calculate Customer Loyalty:** This section uses a tuned random forest to make the prediction.
+             * **Calculate Customer Loyalty:** This section uses a tuned random forest to calculate the customer loyalty score.
              * **Explore different machine-learning models:** This section is designed for users to play with a small chunk of data and see how different models perform.
              
              """)
@@ -247,9 +247,9 @@ def customer_loyalty_calculator():
     about_expander = st.beta_expander('About')
     about_expander.markdown("""
                 
-                The company had earlier hired a consultancy agency to calculate the customer loyalty score of existing customers. After some time, they acquired new customers and wanted to calculate the customer loyalty score in-house in order to save the costs.  
+                The company had earlier hired a consultancy agency to calculate the customer loyalty score of existing customers. Based on research from the consultancy, loyalty measures the proportion of a customer's total grocery spend that is allocated to ABC Grocery vs. their competitors. After some time, ABC Grocery acquired new customers and wanted to calculate the customer loyalty score in-house in order to save the costs.  
                 
-                This app currently uses a random forest model to predict the customer loyalty score after trying various models. The explore different models section is designed to show an interactive space that can be used to test different models. I only provide a few parameters to tune but this can be extended to other available parameters as well.
+                This app currently uses a random forest model to predict the customer loyalty score after trying various models. The 'Explore different models' section is designed to show an interactive space by the user that can be used to test different models. I only provide a few parameters to tune but this can be extended to other available parameters as well.
                 
                 """)
     
@@ -259,7 +259,7 @@ def customer_loyalty_calculator():
     # Making expander for the getting prediction - 
     prediction_expander = st.beta_expander('Calculate Customer Loyalty Score')
     prediction_expander.write("""
-                              Please enter the inputs below to get prediction (Dummy values have been entered to assist the user) -  
+                              Please enter the inputs below to get prediction -  
                               
                               """)
     prediction_input(prediction_expander, navigation_tab)
@@ -273,7 +273,7 @@ def customer_loyalty_calculator():
                               In this section, you can play around with 3 different models and their respective parameters to see how a particular model responds.  
                               * **Decision tree** (min_leafs_sample, max_depth)  
                               * **Random Forest** (n_estimators, max_depth)  
-                              * **Linear Regression** (No parameters available)     
+                              * **Linear Regression**      
                                              
                               """)
     model_expander.write(' ')
@@ -353,7 +353,7 @@ def marketing_recommender():
              
              This page contains 3 sections -
              * **About:** Here you can read about the main idea of the page.
-             * **Calculate Probability of Customer Sign-up:** This section uses a tuned random forest to make the prediction.
+             * **Calculate Probability of Customer Sign-up:** This section uses a tuned random forest to calculate the probability.
              * **Explore different machine-learning models:** This section is designed for users to play with a small chunk of data and see how different models perform.
              
              """)
@@ -364,14 +364,10 @@ def marketing_recommender():
     about_expander = st.beta_expander('About')
     about_expander.markdown("""
                 
-                In the last 3 months, the marketing team ran a promotional campaign that would give customers free delivery for a $100 membership. We conducted AB testing to see whether a certain type of flyer would have higher a sign-up rate. 
-                We concluded that customers were more likely to sign-up if sent a particular flyer.  
+                From the Dashboard, we saw that people living closer to the store had a higher loyalty score. In order to increase the spending of customers living relatively far, the marketing team ran a promotional campaign (Delivery Club) that would give customers free delivery for a $100 membership. We conducted AB testing to see whether a certain type of flyer would have higher a sign-up rate. 
+                We concluded that customers were more likely to sign-up if sent a particular flyer. Later we designed a classification model that can predict how likely a customer is to sign up for the promotion. This would help the marketing team target the required customers and reduce the overall cost of the campaign.  
                 
-                Later we designed a classification model which would inform how likely a customer is to sign up for the promotion. This would help the marketing team target the required customers and reduce the overall cost of the campaign.  
-                
-                This app currently uses a random forest model to predict the recommendation.   
-                
-                The explore different models section is designed to show an interactive space that can be used to test different models. I only provide a few parameters to tune but this can be extended to other available parameters as well.
+                This app currently uses a random forest model to predict the probability. The 'Explore different models' section is designed to show an interactive space that can be used by the user to test different models. I only provide a few parameters to tune but this can be extended to other available parameters as well.
                 
                 """)
     
@@ -381,7 +377,7 @@ def marketing_recommender():
     # Making expander for the getting prediction - 
     prediction_expander = st.beta_expander('Calculate Probability of Customer Sign-Up')
     prediction_expander.write("""
-                              Please enter the inputs below to get prediction (Dummy values have been entered to assist the user) -  
+                              Please enter the inputs below to get prediction -  
                               
                               """)
     prediction_input(prediction_expander, navigation_tab)
@@ -395,7 +391,7 @@ def marketing_recommender():
                               In this section you can play around with 3 different models and their respective parameters to see how a particular model responds.  
                               * **Decision tree** (min_leafs_sample, max_depth)  
                               * **Random Forest** (n_estimators, max_depth)  
-                              * **Logistic Regression** (No parameters available)     
+                              * **Logistic Regression**    
                                              
                               """)
     model_expander.write(' ')
