@@ -18,7 +18,7 @@ title_image()
 st.write("""
      # Grocery Store Application
      
-     This application is designed to assist Grocery Sotre Mart. It contains teh following sections -  
+     This application is designed to assist Grocery Sotre Mart. It contains the following sections -  
      * **Analytics-Page:** An integrated Tableau dashboard to give an overview of the business to the stakeholders.  
      * **Assessing Campaign Performance Using AB Testing:** In this project we apply Chi-Square Test For Independence (a Hypothesis Test) to assess the performance of two types of mailers that were sent out to promote a new service!  
      * **Predicting Customer Loyalty Scores:** ABC grocery retailer hired a market research consultancy to append market level customer loyalty information to the database.  However, only around 50% of the client's customer base could be tagged, thus the other half did not have this information present.  Let's use ML to solve this!
