@@ -1471,6 +1471,27 @@ col1,col2,col3 = st.columns([1,2.5,1])
 
 uploaded_files = col2.file_uploader("Upload an image", ["png", "jpg"], True)
 
+# img_width = 128
+# img_height = 128
+# images = []
+# file_names = []
+
+# # image pre-processing function
+# def preprocess_image(image):
+#     image = load_img(image, target_size = (img_width, img_height))
+#     image = img_to_array(image)
+#     image = np.expand_dims(image, axis = 0)
+#     image = image * (1./255)
+#     return image
+
+from PIL import Image
+import io
+
+# img = Image.open(io.BytesIO(img_bytes))
+# img = img.convert('RGB')
+# img = img.resize((img_width, img_height), Image.NEAREST)
+# img = image.img_to_array(img)
+
 img_width = 128
 img_height = 128
 images = []
@@ -1478,8 +1499,11 @@ file_names = []
 
 # image pre-processing function
 def preprocess_image(image):
-    image = load_img(image, target_size = (img_width, img_height))
-    image = img_to_array(image)
+    img = Image.open(io.BytesIO(image))
+    img = img.convert('RGB')
+    img = img.resize((img_width, img_height), Image.NEAREST)
+    # image = load_img(image, target_size = (img_width, img_height))
+    image = img_to_array(img)
     image = np.expand_dims(image, axis = 0)
     image = image * (1./255)
     return image
@@ -1491,7 +1515,7 @@ if uploaded_files is not None and uploaded_files != [] :
     for uploaded_file in uploaded_files:
          
         # Getting the pre-processed image
-         image = preprocess_image(uploaded_file.read())
+         image = preprocess_image(uploaded_file)
          
          # saving it in list
          images.append(image.tolist())
