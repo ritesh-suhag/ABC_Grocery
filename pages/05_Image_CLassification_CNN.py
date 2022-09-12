@@ -1499,7 +1499,7 @@ file_names = []
 
 # image pre-processing function
 def preprocess_image(image):
-    img = Image.open(io.BytesIO(image))
+    img = Image.open(io.BytesIO(image.read()))
     img = img.convert('RGB')
     img = img.resize((img_width, img_height), Image.NEAREST)
     # image = load_img(image, target_size = (img_width, img_height))
