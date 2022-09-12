@@ -7,7 +7,6 @@
 
 import streamlit as st
 from pages.common_functions.app_functions import title_image, plot_image_121
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
 import numpy as np
 import pandas as pd
 import requests
@@ -1467,9 +1466,9 @@ if uploaded_files is not None and uploaded_files != [] :
 
 """, unsafe_allow_html=True)
 
-col1,col2,col3 = st.columns([1,2.5,1])
+#col1,col2,col3 = st.columns([1,2.5,1])
 
-uploaded_files = col2.file_uploader("Upload an image", ["png", "jpg"], True)
+#uploaded_files = col2.file_uploader("Upload an image", ["png", "jpg"], True)
 
 img_width = 128
 img_height = 128
@@ -1477,37 +1476,37 @@ images = []
 file_names = []
 
 # image pre-processing function
-def preprocess_image(image):
-    image = load_img(image, target_size = (img_width, img_height))
-    image = img_to_array(image)
-    image = np.expand_dims(image, axis = 0)
-    image = image * (1./255)
-    return image
+#def preprocess_image(image):
+#    image = load_img(image, target_size = (img_width, img_height))
+#    image = img_to_array(image)
+#    image = np.expand_dims(image, axis = 0)
+#    image = image * (1./255)
+#    return image
 
 # If files are uploaded -
-if uploaded_files is not None and uploaded_files != [] :
+#if uploaded_files is not None and uploaded_files != [] :
     
     # Looping over all the files
-    for uploaded_file in uploaded_files:
+#    for uploaded_file in uploaded_files:
          
         # Getting the pre-processed image
-         image = preprocess_image(uploaded_file)
+#         image = preprocess_image(uploaded_file)
          
          # saving it in list
-         images.append(image.tolist())
-         file_names.append(uploaded_file.name)
+#         images.append(image.tolist())
+#         file_names.append(uploaded_file.name)
 
     # Creating dict to pass to API - 
-    user_images = {'Images' : images,
+#    user_images = {'Images' : images,
                    'file_names' : file_names}
     
     # Calling the API - 
-    prediction_output = requests.post("http://127.0.0.1:8000/get_image_classification/",json=user_images)
-    prediction_output = prediction_output.json()
+#    prediction_output = requests.post("http://127.0.0.1:8000/get_image_classification/",json=user_images)
+#    prediction_output = prediction_output.json()
     
-    st.write("##### The predictions for uploaded images are - ")
-    col1,col2,col3 = st.columns([1,1.9,1])
-    col2.dataframe(pd.DataFrame(prediction_output))
+#    st.write("##### The predictions for uploaded images are - ")
+#    col1,col2,col3 = st.columns([1,1.9,1])
+#    col2.dataframe(pd.DataFrame(prediction_output))
 
 
 st.markdown("""
