@@ -5,3 +5,5 @@ numpy==1.19.2
 joblib==0.17.0
 Pillow==8.0.1
 matplotlib==3.3.2
+tensorflow
+keras-tuner
