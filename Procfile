@@ -1,1 +1,1 @@
-web: sh setup.sh && streamlit run abc_grocery_app.py
+web: sh setup.sh && streamlit run Grocery_Store_Application.py
