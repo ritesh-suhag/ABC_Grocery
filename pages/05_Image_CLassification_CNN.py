@@ -1491,7 +1491,7 @@ if uploaded_files is not None and uploaded_files != [] :
     for uploaded_file in uploaded_files:
          
         # Getting the pre-processed image
-         image = preprocess_image(uploaded_file)
+         image = preprocess_image(uploaded_file.read())
          
          # saving it in list
          images.append(image.tolist())
