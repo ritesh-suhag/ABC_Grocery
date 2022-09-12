@@ -1498,7 +1498,7 @@ file_names = []
 
     # Creating dict to pass to API - 
 #    user_images = {'Images' : images,
-                   'file_names' : file_names}
+#                   'file_names' : file_names}
     
     # Calling the API - 
 #    prediction_output = requests.post("http://127.0.0.1:8000/get_image_classification/",json=user_images)
