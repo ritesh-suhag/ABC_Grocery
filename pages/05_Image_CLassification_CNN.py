@@ -1458,7 +1458,7 @@ if uploaded_files is not None and uploaded_files != [] :
                    'file_names' : file_names}
     
     # Calling the API - 
-    prediction_output = requests.post("http://127.0.0.1:8000/get_image_classification/",json=user_images)
+    prediction_output = requests.post("https://ml-api-ritesh.herokuapp.com/get_image_classification/",json=user_images)
     prediction_output = prediction_output.json()
 
 ```
