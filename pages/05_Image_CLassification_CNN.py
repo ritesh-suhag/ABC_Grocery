@@ -1469,28 +1469,19 @@ if uploaded_files is not None and uploaded_files != [] :
 
 col1,col2,col3 = st.columns([1,2.5,1])
 
-uploaded_files = col2.file_uploader("Upload an image", ["png", "jpg"], True)
+image_input_type = col2.selectbox("How would you like to input image", ("Take a photo", "Input images from computer"), index=1)
 
-# img_width = 128
-# img_height = 128
-# images = []
-# file_names = []
+if image_input_type == "Take a photo":
+    uploaded_files = col2.camera_input("Take a picture")
+else:
+    uploaded_files = col2.file_uploader("Upload an image", ["png", "jpg", "heic"], True)
 
-# # image pre-processing function
-# def preprocess_image(image):
-#     image = load_img(image, target_size = (img_width, img_height))
-#     image = img_to_array(image)
-#     image = np.expand_dims(image, axis = 0)
-#     image = image * (1./255)
-#     return image
-
-from PIL import Image
+from PIL import Image, ImageFile
 import io
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-# img = Image.open(io.BytesIO(img_bytes))
-# img = img.convert('RGB')
-# img = img.resize((img_width, img_height), Image.NEAREST)
-# img = image.img_to_array(img)
+from pillow_heif import register_heif_opener
+register_heif_opener()
 
 img_width = 128
 img_height = 128
@@ -1511,15 +1502,25 @@ def preprocess_image(image):
 # If files are uploaded -
 if uploaded_files is not None and uploaded_files != [] :
     
-    # Looping over all the files
-    for uploaded_file in uploaded_files:
-         
+    if image_input_type == "Take a photo":
         # Getting the pre-processed image
-         image = preprocess_image(uploaded_file)
-         
-         # saving it in list
-         images.append(image.tolist())
-         file_names.append(uploaded_file.name)
+        image = preprocess_image(uploaded_files)
+        
+        # saving it in list
+        images.append(image.tolist())
+        file_names.append("Camera Photo")
+    
+    if image_input_type == "Input images from computer":
+        
+        # Looping over all the files
+        for uploaded_file in uploaded_files:
+            
+            # Getting the pre-processed image
+            image = preprocess_image(uploaded_file)
+             
+            # saving it in list
+            images.append(image.tolist())
+            file_names.append(uploaded_file.name)
 
     # Creating dict to pass to API - 
     user_images = {'Images' : images,
