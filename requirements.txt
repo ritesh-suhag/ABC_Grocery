@@ -7,3 +7,4 @@ Pillow==8.0.1
 matplotlib==3.3.2
 tensorflow-cpu
 pillow-heif
+protobuf==3.20
